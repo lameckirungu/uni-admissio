@@ -22,7 +22,19 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, Eye, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { 
+  Search, 
+  Filter, 
+  Eye, 
+  CheckCircle, 
+  XCircle, 
+  Loader2, 
+  Download, 
+  Plus, 
+  ClipboardList, 
+  Edit3, 
+  Clock 
+} from "lucide-react";
 
 export default function AdminPage() {
   const { user, isLoading: isLoadingUser } = useAuth();
@@ -204,88 +216,164 @@ export default function AdminPage() {
         <div className="container mx-auto p-4 sm:p-6 lg:p-8">
           {/* Admin Dashboard Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Admin Dashboard</h1>
-            <p className="mt-2 text-slate-600">Manage and review student applications</p>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Admin Dashboard</h1>
+                <p className="mt-2 text-slate-600">Manage and review student applications</p>
+              </div>
+              <div className="mt-4 md:mt-0">
+                <Button variant="outline" className="mr-2">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Admission
+                </Button>
+              </div>
+            </div>
           </div>
           
           {/* Applications Overview Cards */}
           <div className="mb-6">
-            <h2 className="text-lg font-medium text-slate-900 mb-4">Applications Overview</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
-              <Card className="bg-slate-50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-semibold text-slate-900">
+            <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-6">
+              <h2 className="text-lg font-medium text-slate-900 mb-4">Applications Overview</h2>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <div className="rounded-full bg-slate-100 p-3 mr-4">
+                      <ClipboardList className="h-6 w-6 text-slate-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-semibold text-slate-900">
+                        {isLoadingApplications ? (
+                          <div className="h-8 w-16 bg-slate-200 rounded animate-pulse"></div>
+                        ) : (
+                          applications?.length || 0
+                        )}
+                      </div>
+                      <div className="text-sm text-slate-500">Total Applications</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-slate-500">
                     {isLoadingApplications ? (
-                      <div className="h-8 w-16 bg-slate-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-24 bg-slate-200 rounded animate-pulse"></div>
                     ) : (
-                      applications?.length || 0
+                      `${applications?.length} total submissions`
                     )}
                   </div>
-                  <div className="text-sm text-slate-500">Total Applications</div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-slate-50">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-semibold text-slate-900">
+                </div>
+                
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <div className="rounded-full bg-slate-100 p-3 mr-4">
+                      <Edit3 className="h-6 w-6 text-slate-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-semibold text-slate-900">
+                        {isLoadingApplications ? (
+                          <div className="h-8 w-16 bg-slate-200 rounded animate-pulse"></div>
+                        ) : (
+                          applications?.filter(app => app.status === "draft").length || 0
+                        )}
+                      </div>
+                      <div className="text-sm text-slate-500">Drafts</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-slate-500">
                     {isLoadingApplications ? (
-                      <div className="h-8 w-16 bg-slate-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-24 bg-slate-200 rounded animate-pulse"></div>
                     ) : (
-                      applications?.filter(app => app.status === "draft").length || 0
+                      `${applications?.filter(app => app.status === "draft").length} incomplete applications`
                     )}
                   </div>
-                  <div className="text-sm text-slate-500">Drafts</div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-amber-50 border-amber-200">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-semibold text-amber-800">
+                </div>
+                
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <div className="rounded-full bg-amber-100 p-3 mr-4">
+                      <Clock className="h-6 w-6 text-amber-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-semibold text-amber-800">
+                        {isLoadingApplications ? (
+                          <div className="h-8 w-16 bg-amber-200 rounded animate-pulse"></div>
+                        ) : (
+                          applications?.filter(app => app.status === "submitted").length || 0
+                        )}
+                      </div>
+                      <div className="text-sm text-amber-700">Submitted</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-amber-700">
                     {isLoadingApplications ? (
-                      <div className="h-8 w-16 bg-amber-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-24 bg-amber-200 rounded animate-pulse"></div>
                     ) : (
-                      applications?.filter(app => app.status === "submitted").length || 0
+                      `${applications?.filter(app => app.status === "submitted").length} pending review`
                     )}
                   </div>
-                  <div className="text-sm text-amber-700">Submitted</div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-green-50 border-green-200">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-semibold text-green-800">
+                </div>
+                
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <div className="rounded-full bg-green-100 p-3 mr-4">
+                      <CheckCircle className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-semibold text-green-800">
+                        {isLoadingApplications ? (
+                          <div className="h-8 w-16 bg-green-200 rounded animate-pulse"></div>
+                        ) : (
+                          applications?.filter(app => app.status === "approved").length || 0
+                        )}
+                      </div>
+                      <div className="text-sm text-green-700">Approved</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-green-700">
                     {isLoadingApplications ? (
-                      <div className="h-8 w-16 bg-green-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-24 bg-green-200 rounded animate-pulse"></div>
                     ) : (
-                      applications?.filter(app => app.status === "approved").length || 0
+                      `${applications?.filter(app => app.status === "approved").length} accepted students`
                     )}
                   </div>
-                  <div className="text-sm text-green-700">Approved</div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-red-50 border-red-200">
-                <CardContent className="p-4">
-                  <div className="text-2xl font-semibold text-red-800">
+                </div>
+                
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <div className="rounded-full bg-red-100 p-3 mr-4">
+                      <XCircle className="h-6 w-6 text-red-600" />
+                    </div>
+                    <div>
+                      <div className="text-2xl font-semibold text-red-800">
+                        {isLoadingApplications ? (
+                          <div className="h-8 w-16 bg-red-200 rounded animate-pulse"></div>
+                        ) : (
+                          applications?.filter(app => app.status === "rejected").length || 0
+                        )}
+                      </div>
+                      <div className="text-sm text-red-700">Rejected</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-red-700">
                     {isLoadingApplications ? (
-                      <div className="h-8 w-16 bg-red-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-24 bg-red-200 rounded animate-pulse"></div>
                     ) : (
-                      applications?.filter(app => app.status === "rejected").length || 0
+                      `${applications?.filter(app => app.status === "rejected").length} declined applications`
                     )}
                   </div>
-                  <div className="text-sm text-red-700">Rejected</div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </div>
           
           {/* Applications Table */}
-          <Card className="mb-8">
-            <CardHeader>
+          <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden mb-8">
+            <div className="p-6 border-b border-slate-200">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
-                  <CardTitle>Applications</CardTitle>
-                  <CardDescription>Review and manage student applications</CardDescription>
+                  <h2 className="text-lg font-semibold text-slate-900">Applications</h2>
+                  <p className="text-sm text-slate-500">Review and manage student applications</p>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-2 mt-4 md:mt-0">
@@ -320,11 +408,11 @@ export default function AdminPage() {
                   </div>
                 </div>
               </div>
-            </CardHeader>
+            </div>
             
-            <CardContent>
+            <div className="p-0">
               {isLoadingApplications ? (
-                <div className="space-y-4">
+                <div className="p-6 space-y-4">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="animate-pulse">
                       <div className="h-12 bg-slate-100 rounded"></div>
@@ -332,30 +420,31 @@ export default function AdminPage() {
                   ))}
                 </div>
               ) : filteredApplications && filteredApplications.length > 0 ? (
-                <div className="rounded-md border">
+                <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>ID Number</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Submitted</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                      <TableRow className="bg-slate-50">
+                        <TableHead className="font-medium text-slate-500">Name</TableHead>
+                        <TableHead className="font-medium text-slate-500">ID Number</TableHead>
+                        <TableHead className="font-medium text-slate-500">Status</TableHead>
+                        <TableHead className="font-medium text-slate-500">Submitted</TableHead>
+                        <TableHead className="font-medium text-slate-500 text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredApplications.map((application) => (
-                        <TableRow key={application.id}>
+                        <TableRow key={application.id} className="hover:bg-slate-50 transition-colors">
                           <TableCell className="font-medium">{getApplicantName(application)}</TableCell>
-                          <TableCell>{getApplicantId(application)}</TableCell>
+                          <TableCell className="text-slate-600">{getApplicantId(application)}</TableCell>
                           <TableCell>{getStatusBadge(application.status)}</TableCell>
-                          <TableCell>{formatDate(application.submittedAt)}</TableCell>
+                          <TableCell className="text-slate-600">{formatDate(application.submittedAt)}</TableCell>
                           <TableCell className="text-right">
                             <Dialog>
                               <DialogTrigger asChild>
                                 <Button 
                                   variant="ghost" 
                                   size="sm"
+                                  className="text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                                   onClick={() => {
                                     setSelectedApplication(application);
                                     setSelectedTab("details");
@@ -687,8 +776,8 @@ export default function AdminPage() {
                   <p className="text-slate-500">No applications found matching your filters.</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </main>
       
