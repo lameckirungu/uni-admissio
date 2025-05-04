@@ -138,9 +138,14 @@ export default function AdminPage() {
   };
 
   // Format date string
-  const formatDate = (dateString?: string | null) => {
+  const formatDate = (dateString?: string | Date | null) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
+    
+    const date = typeof dateString === 'string' 
+      ? new Date(dateString) 
+      : dateString;
+    
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
