@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { School } from "lucide-react";
+import { School, Shield, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,8 +24,17 @@ export default function AuthPage() {
     return null;
   }
 
-  // Login form
-  const loginForm = useForm<z.infer<typeof loginUserSchema>>({
+  // Student Login form
+  const studentLoginForm = useForm<z.infer<typeof loginUserSchema>>({
+    resolver: zodResolver(loginUserSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  // Admin Login form
+  const adminLoginForm = useForm<z.infer<typeof loginUserSchema>>({
     resolver: zodResolver(loginUserSchema),
     defaultValues: {
       username: "",
@@ -43,7 +52,11 @@ export default function AuthPage() {
     },
   });
 
-  const onLoginSubmit = async (data: z.infer<typeof loginUserSchema>) => {
+  const onStudentLoginSubmit = async (data: z.infer<typeof loginUserSchema>) => {
+    await loginMutation.mutateAsync(data);
+  };
+
+  const onAdminLoginSubmit = async (data: z.infer<typeof loginUserSchema>) => {
     await loginMutation.mutateAsync(data);
   };
 
@@ -68,38 +81,47 @@ export default function AuthPage() {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="login" className="flex items-center gap-1">
+                  <User className="h-3.5 w-3.5" />
+                  <span>Student</span>
+                </TabsTrigger>
+                <TabsTrigger value="admin" className="flex items-center gap-1">
+                  <Shield className="h-3.5 w-3.5" />
+                  <span>Admin</span>
+                </TabsTrigger>
                 <TabsTrigger value="register">Register</TabsTrigger>
               </TabsList>
+              
+              {/* Student Login Tab */}
               <TabsContent value="login">
-                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                <form onSubmit={studentLoginForm.handleSubmit(onStudentLoginSubmit)} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label htmlFor="student-login-email">Email</Label>
                     <Input 
-                      id="login-email" 
+                      id="student-login-email" 
                       type="email"
                       placeholder="you@example.com"
-                      {...loginForm.register("username")}
+                      {...studentLoginForm.register("username")}
                     />
-                    {loginForm.formState.errors.username && (
-                      <p className="text-sm text-red-500">{loginForm.formState.errors.username.message}</p>
+                    {studentLoginForm.formState.errors.username && (
+                      <p className="text-sm text-red-500">{studentLoginForm.formState.errors.username.message}</p>
                     )}
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="login-password">Password</Label>
+                      <Label htmlFor="student-login-password">Password</Label>
                       <a className="text-xs text-primary-600 hover:underline" href="#">
                         Forgot password?
                       </a>
                     </div>
                     <Input 
-                      id="login-password" 
+                      id="student-login-password" 
                       type="password"
-                      {...loginForm.register("password")}
+                      {...studentLoginForm.register("password")}
                     />
-                    {loginForm.formState.errors.password && (
-                      <p className="text-sm text-red-500">{loginForm.formState.errors.password.message}</p>
+                    {studentLoginForm.formState.errors.password && (
+                      <p className="text-sm text-red-500">{studentLoginForm.formState.errors.password.message}</p>
                     )}
                   </div>
                   <Button 
@@ -107,10 +129,52 @@ export default function AuthPage() {
                     className="w-full"
                     disabled={loginMutation.isPending}
                   >
-                    {loginMutation.isPending ? "Signing in..." : "Sign In"}
+                    {loginMutation.isPending ? "Signing in..." : "Student Sign In"}
                   </Button>
                 </form>
               </TabsContent>
+              
+              {/* Admin Login Tab */}
+              <TabsContent value="admin">
+                <form onSubmit={adminLoginForm.handleSubmit(onAdminLoginSubmit)} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="admin-login-email">Admin Email</Label>
+                    <Input 
+                      id="admin-login-email" 
+                      type="email"
+                      placeholder="admin@karu.ac.ke"
+                      {...adminLoginForm.register("username")}
+                    />
+                    {adminLoginForm.formState.errors.username && (
+                      <p className="text-sm text-red-500">{adminLoginForm.formState.errors.username.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="admin-login-password">Admin Password</Label>
+                    <Input 
+                      id="admin-login-password" 
+                      type="password"
+                      {...adminLoginForm.register("password")}
+                    />
+                    {adminLoginForm.formState.errors.password && (
+                      <p className="text-sm text-red-500">{adminLoginForm.formState.errors.password.message}</p>
+                    )}
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    disabled={loginMutation.isPending}
+                  >
+                    {loginMutation.isPending ? "Signing in..." : "Admin Sign In"}
+                  </Button>
+                </form>
+                <div className="mt-4 text-sm text-slate-500 bg-slate-50 p-3 rounded-md border border-slate-200">
+                  <p className="font-medium text-slate-700">Admin Access Only</p>
+                  <p>This area is restricted to administrative staff of Karatina University for managing student applications.</p>
+                </div>
+              </TabsContent>
+              
+              {/* Register Tab */}
               <TabsContent value="register">
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
                   <div className="space-y-2">

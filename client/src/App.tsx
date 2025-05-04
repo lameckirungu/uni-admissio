@@ -9,6 +9,7 @@ import ApplicationPage from "@/pages/application-page";
 import DocumentsPage from "@/pages/documents-page";
 import AdminPage from "@/pages/admin-page";
 import { ProtectedRoute } from "./lib/protected-route";
+import { AdminRoute } from "./lib/admin-route";
 import { AuthProvider } from "./hooks/use-auth";
 
 function Router() {
@@ -18,7 +19,7 @@ function Router() {
       <ProtectedRoute path="/" component={DashboardPage} />
       <ProtectedRoute path="/apply" component={ApplicationPage} />
       <ProtectedRoute path="/documents" component={DocumentsPage} />
-      <ProtectedRoute path="/admin" component={AdminPage} />
+      <AdminRoute path="/admin" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
