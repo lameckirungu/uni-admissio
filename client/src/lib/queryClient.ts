@@ -33,7 +33,13 @@ export const getQueryFn: <T>(options: {
       credentials: "include",
     });
 
+    // Handle 401 Unauthorized based on options
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+      return null;
+    }
+    
+    // Handle 204 No Content (no data available yet, but this is normal)
+    if (res.status === 204) {
       return null;
     }
 
