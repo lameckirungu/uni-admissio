@@ -44,25 +44,32 @@ export function NavBar() {
         </div>
         
         <nav className="ml-auto flex items-center gap-6">
-          <Link href="/">
-            <a className={`text-sm font-medium ${isActive('/') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-              Dashboard
-            </a>
-          </Link>
-          <Link href="/apply">
-            <a className={`text-sm font-medium ${isActive('/apply') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-              Application
-            </a>
-          </Link>
-          <Link href="/documents">
-            <a className={`text-sm font-medium ${isActive('/documents') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-              Documents
-            </a>
-          </Link>
+          {/* Student navigation links */}
+          {user.role === "student" && (
+            <>
+              <Link href="/">
+                <a className={`text-sm font-medium ${isActive('/') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+                  Dashboard
+                </a>
+              </Link>
+              <Link href="/apply">
+                <a className={`text-sm font-medium ${isActive('/apply') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+                  Application
+                </a>
+              </Link>
+              <Link href="/documents">
+                <a className={`text-sm font-medium ${isActive('/documents') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+                  Documents
+                </a>
+              </Link>
+            </>
+          )}
+
+          {/* Admin navigation links */}
           {user.role === "admin" && (
             <Link href="/admin">
               <a className={`text-sm font-medium ${isActive('/admin') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-                Admin
+                Admin Dashboard
               </a>
             </Link>
           )}

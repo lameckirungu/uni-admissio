@@ -8,18 +8,29 @@ import DashboardPage from "@/pages/dashboard-page";
 import ApplicationPage from "@/pages/application-page";
 import DocumentsPage from "@/pages/documents-page";
 import AdminPage from "@/pages/admin-page";
-import { ProtectedRoute } from "./lib/protected-route";
+import LandingPage from "@/pages/landing-page";
+import { ProtectedRoute, StudentRoute } from "./lib/protected-route";
 import { AdminRoute } from "./lib/admin-route";
 import { AuthProvider } from "./hooks/use-auth";
 
 function Router() {
   return (
     <Switch>
+      {/* Public route that redirects based on auth status and role */}
+      <Route path="/" component={LandingPage} />
+      
+      {/* Authentication route */}
       <Route path="/auth" component={AuthPage} />
-      <ProtectedRoute path="/" component={DashboardPage} />
-      <ProtectedRoute path="/apply" component={ApplicationPage} />
-      <ProtectedRoute path="/documents" component={DocumentsPage} />
+      
+      {/* Student-only routes */}
+      <StudentRoute path="/dashboard" component={DashboardPage} />
+      <StudentRoute path="/apply" component={ApplicationPage} />
+      <StudentRoute path="/documents" component={DocumentsPage} />
+      
+      {/* Admin-only route */}
       <AdminRoute path="/admin" component={AdminPage} />
+      
+      {/* 404 route */}
       <Route component={NotFound} />
     </Switch>
   );
