@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Application, Document } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +14,11 @@ interface DocumentUploadProps {
 
 export function DocumentUpload({ application, isLoading }: DocumentUploadProps) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [documents, setDocuments] = useState<Document[]>([]);
+  
+  // If the user is not a student, don't allow access
+  const isStudent = user?.role === "student";
 
   // Fetch documents if there's an application
   const {
@@ -167,6 +172,33 @@ export function DocumentUpload({ application, isLoading }: DocumentUploadProps) 
     );
   }
 
+  // Show error message if the user is not a student
+  if (!isStudent) {
+    return (
+      <Card className="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 px-6 py-4">
+          <h2 className="text-lg font-semibold text-slate-900">Access Denied</h2>
+        </div>
+        <CardContent className="p-6">
+          <div className="flex flex-col items-center justify-center p-6 gap-4 text-center">
+            <div className="bg-red-100 p-3 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-red-600">Administrator Access Restricted</h3>
+            <p className="text-slate-600 max-w-md">
+              This document upload section is only accessible to student users. As an administrator, 
+              you do not have permission to upload or manage student documents.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (!application) {
     return (
       <Card className="rounded-lg border border-slate-200 bg-white shadow-sm">
@@ -203,7 +235,7 @@ export function DocumentUpload({ application, isLoading }: DocumentUploadProps) 
             onUpload={(file) => handleFileUpload(file, "nationalId")}
             uploadedFileName={nationalIdDoc?.fileName}
             isUploaded={!!nationalIdDoc}
-            isVerified={nationalIdDoc?.verified}
+            isVerified={nationalIdDoc?.verified || false}
             onRemove={nationalIdDoc ? () => handleRemoveDocument(nationalIdDoc.id) : undefined}
             onView={nationalIdDoc ? () => handleViewDocument(nationalIdDoc.storagePath) : undefined}
           />
@@ -218,7 +250,7 @@ export function DocumentUpload({ application, isLoading }: DocumentUploadProps) 
             onUpload={(file) => handleFileUpload(file, "kcseResults")}
             uploadedFileName={kcseDoc?.fileName}
             isUploaded={!!kcseDoc}
-            isVerified={kcseDoc?.verified}
+            isVerified={kcseDoc?.verified || false}
             onRemove={kcseDoc ? () => handleRemoveDocument(kcseDoc.id) : undefined}
             onView={kcseDoc ? () => handleViewDocument(kcseDoc.storagePath) : undefined}
           />
