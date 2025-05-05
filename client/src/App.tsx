@@ -8,7 +8,7 @@ import DashboardPage from "@/pages/dashboard-page";
 import ApplicationPage from "@/pages/application-page";
 import DocumentsPage from "@/pages/documents-page";
 import AdminPage from "@/pages/admin-page";
-import LandingPage from "@/pages/landing-page";
+import WelcomePage from "@/pages/welcome-page";
 import { ProtectedRoute, StudentRoute } from "./lib/protected-route";
 import { AdminRoute } from "./lib/admin-route";
 import { AuthProvider } from "./hooks/use-auth";
@@ -17,7 +17,7 @@ function Router() {
   return (
     <Switch>
       {/* Public route that redirects based on auth status and role */}
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={WelcomePage} />
       
       {/* Authentication route */}
       <Route path="/auth" component={AuthPage} />

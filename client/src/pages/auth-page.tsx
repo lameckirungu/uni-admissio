@@ -18,9 +18,13 @@ export default function AuthPage() {
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
 
-  // Redirect if already logged in
+  // Redirect if already logged in, based on user role
   if (user) {
-    setLocation("/");
+    if (user.role === "admin") {
+      setLocation("/admin");
+    } else {
+      setLocation("/dashboard");
+    }
     return null;
   }
 

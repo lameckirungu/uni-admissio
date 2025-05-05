@@ -47,30 +47,22 @@ export function NavBar() {
           {/* Student navigation links */}
           {user.role === "student" && (
             <>
-              <Link href="/">
-                <a className={`text-sm font-medium ${isActive('/') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-                  Dashboard
-                </a>
+              <Link href="/dashboard" className={`text-sm font-medium ${isActive('/dashboard') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+                Dashboard
               </Link>
-              <Link href="/apply">
-                <a className={`text-sm font-medium ${isActive('/apply') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-                  Application
-                </a>
+              <Link href="/apply" className={`text-sm font-medium ${isActive('/apply') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+                Application
               </Link>
-              <Link href="/documents">
-                <a className={`text-sm font-medium ${isActive('/documents') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-                  Documents
-                </a>
+              <Link href="/documents" className={`text-sm font-medium ${isActive('/documents') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+                Documents
               </Link>
             </>
           )}
 
           {/* Admin navigation links */}
           {user.role === "admin" && (
-            <Link href="/admin">
-              <a className={`text-sm font-medium ${isActive('/admin') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
-                Admin Dashboard
-              </a>
+            <Link href="/admin" className={`text-sm font-medium ${isActive('/admin') ? 'text-primary-600' : 'text-slate-600 hover:text-slate-900'}`}>
+              Admin Dashboard
             </Link>
           )}
           

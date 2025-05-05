@@ -16,6 +16,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Application } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,11 @@ interface ApplicationFormProps {
 
 export function ApplicationForm({ application, isLoading }: ApplicationFormProps) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("personal");
+  
+  // If the user is not a student, don't allow form access
+  const isStudent = user?.role === "student";
   
   // Create form with react-hook-form and zod validation
   const form = useForm<z.infer<typeof applicationFormSchema>>({
