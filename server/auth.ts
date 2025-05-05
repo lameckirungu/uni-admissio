@@ -9,7 +9,13 @@ import { User } from "@shared/schema";
 
 declare global {
   namespace Express {
-    interface User extends User {}
+    // Define the User interface for Express without circular reference
+    interface User {
+      id: number;
+      username: string;
+      role: string;
+      createdAt?: Date;
+    }
   }
 }
 
@@ -96,9 +102,19 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/logout", (req, res, next) => {
+    // Store session for destruction
+    const session = req.session;
+    
     req.logout((err) => {
       if (err) return next(err);
-      res.sendStatus(200);
+      
+      // Destroy the session completely to ensure no data leakage
+      session.destroy((err) => {
+        if (err) return next(err);
+        // Clear the cookie on the client
+        res.clearCookie('connect.sid');
+        res.sendStatus(200);
+      });
     });
   });
 

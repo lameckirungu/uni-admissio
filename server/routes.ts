@@ -16,21 +16,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
+      // Validate formData to make sure it's not null or undefined
+      if (!req.body.formData) {
+        return res.status(400).json({ message: "Invalid application data" });
+      }
+
       // Check if user already has an application
       const existingApplication = await storage.getApplicationByUserId(req.user.id);
       
       if (existingApplication) {
-        // Update existing application
+        // Update existing application - make sure we're using the correct application ID
+        const userOwnedAppId = existingApplication.id;
+        
         const updatedApplication = await storage.updateApplication(
-          existingApplication.id, 
+          userOwnedAppId, 
           req.body.formData
         );
         return res.status(200).json(updatedApplication);
       } else {
-        // Create new application
+        // Create new application specific to this user
         const newApplication = await storage.createApplication(
           req.user.id, 
-          req.body.formData
+          req.body.formData || {} // Ensure we don't send null/undefined
         );
         return res.status(201).json(newApplication);
       }
@@ -45,12 +52,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
+      // Find the specific application for this user
       const application = await storage.getApplicationByUserId(req.user.id);
       
       if (!application) {
-        return res.status(404).json({ message: "Application not found" });
+        // Instead of returning a 404 error, which might be confusing for a new user,
+        // return an empty response with a 204 No Content status
+        // This indicates that the request was successful but there's no application yet
+        return res.status(204).end();
       }
       
+      // Return the user's application
       return res.status(200).json(application);
     } catch (error) {
       next(error);

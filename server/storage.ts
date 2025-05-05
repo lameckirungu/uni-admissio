@@ -76,11 +76,14 @@ class DatabaseStorage implements IStorage {
   }
 
   async getApplicationByUserId(userId: number): Promise<Application | undefined> {
-    const [application] = await db.select()
+    // Query to get the most recent application for a specific user
+    const result = await db.select()
       .from(applications)
       .where(eq(applications.userId, userId))
-      .orderBy(applications.updatedAt);
-    return application;
+      .orderBy(applications.updatedAt) // Order by updatedAt
+      .limit(1); // Only get one result
+    
+    return result.length > 0 ? result[0] : undefined;
   }
 
   async updateApplication(id: number, formData: any): Promise<Application | undefined> {
@@ -110,13 +113,16 @@ class DatabaseStorage implements IStorage {
   }
 
   async getApplications(filters?: { status?: string }): Promise<Application[]> {
-    let query = db.select().from(applications);
+    // Create a base query first
+    let baseQuery = db.select().from(applications);
     
+    // Apply filter conditions if provided
     if (filters?.status) {
-      query = query.where(eq(applications.status, filters.status));
+      baseQuery = baseQuery.where(eq(applications.status, filters.status));
     }
     
-    return await query.orderBy(applications.updatedAt);
+    // Execute the query with ordering
+    return await baseQuery.orderBy(applications.updatedAt);
   }
 
   // Document methods
