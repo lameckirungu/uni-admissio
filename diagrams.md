@@ -1,6 +1,78 @@
 
 # System Diagrams
 
+## Logical Data Model
+```mermaid
+erDiagram
+    User {
+        username string
+        password string
+        role string
+    }
+    Profile {
+        fullName string
+        email string
+        phoneNumber string
+    }
+    Application {
+        status string
+        formData json
+        submittedAt datetime
+    }
+    Document {
+        documentType string
+        fileName string
+        verified boolean
+    }
+    
+    User ||--|| Profile : has
+    User ||--o{ Application : submits
+    Application ||--o{ Document : contains
+```
+
+## Physical Data Model
+```mermaid
+erDiagram
+    users {
+        serial id PK
+        text username UK "NOT NULL"
+        text password "NOT NULL"
+        text role "NOT NULL"
+        timestamp created_at "NOT NULL"
+    }
+    profiles {
+        serial id PK
+        integer user_id FK "NOT NULL"
+        text full_name
+        text email
+        text phone_number
+        timestamp created_at "NOT NULL"
+        timestamp updated_at "NOT NULL"
+    }
+    applications {
+        serial id PK
+        integer user_id FK "NOT NULL"
+        text status "NOT NULL"
+        jsonb form_data "NOT NULL"
+        timestamp created_at "NOT NULL"
+        timestamp updated_at "NOT NULL"
+        timestamp submitted_at
+    }
+    documents {
+        serial id PK
+        integer application_id FK "NOT NULL"
+        text document_type "NOT NULL"
+        text file_name "NOT NULL"
+        text storage_path "NOT NULL"
+        timestamp uploaded_at "NOT NULL"
+        boolean verified "DEFAULT false"
+    }
+    
+    users ||--|| profiles : belongs_to
+    users ||--o{ applications : owns
+    applications ||--o{ documents : contains
+```
+
 ## System Architecture
 ```mermaid
 graph TB
