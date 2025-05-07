@@ -73,6 +73,57 @@ erDiagram
     applications ||--o{ documents : contains
 ```
 
+## Security Implementation
+```mermaid
+graph TB
+    subgraph Client["Client Security Layer"]
+        FormVal["Form Validation (Zod)"]
+        CSRFProt["CSRF Protection"]
+        HTTPOnly["HTTPOnly Cookies"]
+        SecHead["Security Headers"]
+    end
+
+    subgraph Auth["Authentication Layer"]
+        NextAuth["NextAuth.js"]
+        JWT["JWT Tokens"]
+        Session["Session Management"]
+        PassHash["Password Hashing (bcrypt)"]
+    end
+
+    subgraph RBAC["Authorization Layer (RBAC)"]
+        RoleCheck["Role Checking"]
+        RouteGuard["Route Guards"]
+        APIGuard["API Endpoint Guards"]
+    end
+
+    subgraph Data["Data Security Layer"]
+        RLS["Row Level Security"]
+        Encrypt["Data Encryption"]
+        FileVal["File Validation"]
+        SecStore["Secure Storage"]
+    end
+
+    %% Connections
+    FormVal --> NextAuth
+    CSRFProt --> NextAuth
+    NextAuth --> JWT
+    JWT --> Session
+    Session --> RoleCheck
+    PassHash --> NextAuth
+    
+    RoleCheck --> RouteGuard
+    RoleCheck --> APIGuard
+    
+    RouteGuard --> RLS
+    APIGuard --> RLS
+    RLS --> SecStore
+    FileVal --> SecStore
+    
+    %% Security flow indicators
+    classDef secured fill:#e6f3ff,stroke:#3182ce
+    class NextAuth,RLS,SecStore secured
+```
+
 ## System Architecture
 ```mermaid
 graph TB
