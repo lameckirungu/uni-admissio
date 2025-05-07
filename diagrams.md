@@ -1,6 +1,45 @@
 
 # System Diagrams
 
+## System Architecture
+```mermaid
+graph TB
+    subgraph Client["Client Layer (React + TypeScript)"]
+        UI["UI Components (Shadcn/ui)"]
+        Pages["Pages (Auth/Dashboard/Admin)"]
+        State["State Management (TanStack Query)"]
+        Forms["Form Handling (React Hook Form + Zod)"]
+    end
+
+    subgraph Server["Server Layer (Express + TypeScript)"]
+        API["REST API Endpoints"]
+        Auth["Authentication (NextAuth.js)"]
+        Valid["Validation Layer"]
+        Files["File Management"]
+    end
+
+    subgraph Database["Database Layer (Supabase)"]
+        PG["PostgreSQL Database"]
+        Storage["File Storage"]
+        Security["Row Level Security"]
+    end
+
+    Client --> |HTTP/REST| Server
+    Server --> |SQL/Storage API| Database
+    
+    %% Data flow connections
+    UI --> State
+    Pages --> Forms
+    Forms --> State
+    State --> API
+    API --> Auth
+    API --> Valid
+    Valid --> Files
+    Files --> Storage
+    Auth --> PG
+    Valid --> PG
+```
+
 ## 4.6.1 Data Flow Diagrams (DFDs)
 
 ### Level 0 DFD (Context Diagram)
