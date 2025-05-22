@@ -1,4 +1,4 @@
-
+![App Screenshot](./attached_assets/landing_page_admissio.png)
 # Admissio - Student Application Management System
 
 A web application built for Karatina University to manage student applications and admissions processes. Built with React, TypeScript, and Supabase.
